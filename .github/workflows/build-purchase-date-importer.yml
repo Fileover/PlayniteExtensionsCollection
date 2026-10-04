@@ -1,0 +1,38 @@
+name: Build Purchase Date Importer
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "source/Generic/PurchaseDateImporter/**"
+      - ".github/workflows/build-purchase-date-importer.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Ensure .NET Framework 4.6.2 targeting pack
+        shell: cmd
+        run: choco install netfx-4.6.2-devpack -y --no-progress
+
+      - name: Restore NuGet packages
+        shell: cmd
+        run: nuget restore source\Generic\PurchaseDateImporter\PurchaseDateImporter.csproj -PackagesDirectory source\packages -NonInteractive
+
+      - name: Build
+        shell: cmd
+        run: msbuild source\Generic\PurchaseDateImporter\PurchaseDateImporter.csproj /p:Configuration=Release /m /nologo /verbosity:minimal
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: PurchaseDateImporter
+          path: source\Generic\PurchaseDateImporter\bin\Release\
+          if-no-files-found: error
