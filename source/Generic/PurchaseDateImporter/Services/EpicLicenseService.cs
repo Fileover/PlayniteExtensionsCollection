@@ -12,10 +12,11 @@ namespace PurchaseDateImporter.Services
 {
     public static class EpicLicenseService
     {
+        private static readonly ILogger logger = LogManager.GetLogger();
         public static Guid PluginId = Guid.Parse("00000002-dbd1-46c6-b5d0-b1ba559d10e4");
         public const string LibraryName = "Epic";
         public const string LoginUrl = @"https://store.epicgames.com/";
-        private const string epicUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Vivaldi/4.3";
+        private const string epicUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
 
         public static Dictionary<string, LicenseData> GetLicensesDict()
         {
@@ -41,7 +42,6 @@ namespace PurchaseDateImporter.Services
                 {
                     var apiUrl = string.Format(apiTemplate, nextPageToken);
                     webView.NavigateAndWait(apiUrl);
-                    var pageSource = webView.GetPageSource();
                     var json = webView.GetPageText();
                     if (json.IsNullOrEmpty())
                     {
@@ -50,6 +50,10 @@ namespace PurchaseDateImporter.Services
 
                     if (!Serialization.TryFromJson<EpicGetOrderHistoryResponse>(json, out var response))
                     {
+                        // The endpoint doesn't return JSON when the embedded browser doesn't
+                        // have a logged in Epic web session, for example when it redirects to
+                        // the login page
+                        logger.Debug($"Failed to obtain Epic order history data. Page text: {(json.Length > 300 ? json.Substring(0, 300) : json)}");
                         break;
                     }
 

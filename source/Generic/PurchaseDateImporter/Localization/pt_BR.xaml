@@ -3,7 +3,7 @@
     <sys:String x:Key="LOC_PurchaseDateImporter_MenuItemOpenWindowDesc">Abrir janela de Importação de Data de Compra</sys:String>
     <sys:String x:Key="LOC_PurchaseDateImporter_ImporterWindowLicensesNotObtained" xml:space="preserve">Falha ao obter licenças para a biblioteca {0}
 
-Verifique se você está conectado</sys:String>
+Verifique se você está conectado usando o botão &quot;Login&quot; desta janela. Estar conectado em clientes externos como Legendary ou GOG OSS não é suficiente, o login deve ser feito na janela do site que é aberta</sys:String>
     <sys:String x:Key="LOC_PurchaseDateImporter_ImporterWindowDatesImportResultMessage">&quot;Alterada a data de adição de {0} na biblioteca {1}&quot;</sys:String>
     <sys:String x:Key="LOC_PurchaseDateImporter_ImporterWindowLicenseExportMessage">Licenças para a biblioteca {0} exportadas com sucesso para &quot;{1}&quot;</sys:String>
     <sys:String x:Key="LOC_PurchaseDateImporter_ImporterWindowLicenseExportFailMessage">Falha ao exportar a biblioteca para &quot;{0}&quot;</sys:String>

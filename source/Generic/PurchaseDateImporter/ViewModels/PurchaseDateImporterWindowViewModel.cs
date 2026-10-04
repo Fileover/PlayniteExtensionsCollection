@@ -13,9 +13,15 @@ namespace PurchaseDateImporter.ViewModels
 {
     public class PurchaseDateImporterWindowViewModel : ObservableObject
     {
-        private const string webViewUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 Vivaldi/4.3";
+        private const string webViewUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
         private static readonly ILogger _logger = LogManager.GetLogger();
         private IPlayniteAPI playniteApi;
+
+        // Plugin ids of the community library plugins from hawkeye116477
+        // https://github.com/hawkeye116477/playnite-legendary-plugin
+        private static readonly Guid LegendaryPluginId = Guid.Parse("EAD65C3B-2F8F-4E37-B4E6-B3DE6BE540C6");
+        // https://github.com/hawkeye116477/playnite-gog-oss-plugin
+        private static readonly Guid GogOssPluginId = Guid.Parse("03689811-3F33-4DFB-A121-2EE168FB9A5C");
 
         private string selectedLibrary;
         public string SelectedLibrary { get => selectedLibrary; set => SetValue(ref selectedLibrary, value); }
@@ -29,7 +35,6 @@ namespace PurchaseDateImporter.ViewModels
 
             LibrariesSource = new Dictionary<string, string>
             {
-                [EaLicenseService.LibraryName] = EaLicenseService.LibraryName,
                 [EpicLicenseService.LibraryName] = EpicLicenseService.LibraryName,
                 [GogLicenseService.LibraryName] = GogLicenseService.LibraryName,
                 [SteamLicenseService.LibraryName] = SteamLicenseService.LibraryName
@@ -42,22 +47,16 @@ namespace PurchaseDateImporter.ViewModels
         {
             switch (selectedLibrary)
             {
-                case EaLicenseService.LibraryName:
-                    ApplyDatesToLibrary(EaLicenseService.LibraryName,
-                    EaLicenseService.PluginId, EaLicenseService.GetLicensesDict(), false);
-                    break;
                 case EpicLicenseService.LibraryName:
                     var licenses = EpicLicenseService.GetLicensesDict();
                     ApplyDatesToLibrary(EpicLicenseService.LibraryName, EpicLicenseService.PluginId, licenses, true);
-                    var legendaryPluginId = Guid.Parse("EAD65C3B-2F8F-4E37-B4E6-B3DE6BE540C6");
-                    ApplyDatesToLibrary("Legendary (Epic)", legendaryPluginId, licenses, true);
+                    ApplyDatesToLibrary("Legendary (Epic)", LegendaryPluginId, licenses, true);
                     break;
                 case GogLicenseService.LibraryName:
                     var gogLicenses = GogLicenseService.GetLicensesDict();
                     ApplyDatesToLibrary(GogLicenseService.LibraryName,
                         GogLicenseService.PluginId, gogLicenses, false);
-                    ApplyDatesToLibrary("GOG OSS library integration",
-                        Guid.Parse("EAD65C3B-2F8F-4E37-B4E6-B3DE6BE540C6"), gogLicenses, false);
+                    ApplyDatesToLibrary("GOG OSS library integration", GogOssPluginId, gogLicenses, false);
                     break;
                 case SteamLicenseService.LibraryName:
                     ApplyDatesToLibrary(SteamLicenseService.LibraryName,
@@ -181,9 +180,6 @@ namespace PurchaseDateImporter.ViewModels
 
             switch (selectedLibrary)
             {
-                case EaLicenseService.LibraryName:
-                    ExportLicensesIdMatch(EaLicenseService.LibraryName, EaLicenseService.PluginId, EaLicenseService.GetLicensesDict(), savePath, true, true, false);
-                    break;
                 case EpicLicenseService.LibraryName:
                     ExportLicenses(EpicLicenseService.LibraryName, EpicLicenseService.GetLicenses(), savePath);
                     break;
@@ -202,9 +198,6 @@ namespace PurchaseDateImporter.ViewModels
         {
             switch (selectedLibrary)
             {
-                case EaLicenseService.LibraryName:
-                    OpenWebViewForLogin(EaLicenseService.LoginUrl);
-                    break;
                 case EpicLicenseService.LibraryName:
                     OpenWebViewForLogin(EpicLicenseService.LoginUrl);
                     break;

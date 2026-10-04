@@ -1,4 +1,5 @@
-﻿using Playnite.SDK.Data;
+﻿using Playnite.SDK;
+using Playnite.SDK.Data;
 using PlayniteUtilitiesCommon;
 using PurchaseDateImporter.Models;
 using System;
@@ -11,6 +12,7 @@ namespace PurchaseDateImporter.Services
 {
     public static class GogLicenseService
     {
+        private static readonly ILogger logger = LogManager.GetLogger();
         public static Guid PluginId = Guid.Parse("aebe8b7c-6dc3-4a66-af31-e7375c6b5e9e");
         public const string LibraryName = "GOG";
         public const string LoginUrl = @"https://www.gog.com/";
@@ -44,8 +46,16 @@ namespace PurchaseDateImporter.Services
                         break;
                     }
 
-                    var response = Serialization.FromJson<GogOrderResponse>(pageText);
-                    if (response.Orders.Count == 0)
+                    if (!Serialization.TryFromJson<GogOrderResponse>(pageText, out var response))
+                    {
+                        // The endpoint redirects to the login page when there's no logged in
+                        // GOG web session on the embedded browser, in which case the response
+                        // is not JSON, for example the text content of the login page
+                        logger.Debug($"Failed to obtain GOG orders data on page {i}. Page text: {(pageText.Length > 300 ? pageText.Substring(0, 300) : pageText)}");
+                        break;
+                    }
+
+                    if (!response.Orders.HasItems())
                     {
                         break;
                     }
