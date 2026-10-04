@@ -1,4 +1,4 @@
-﻿using Playnite.SDK;
+using Playnite.SDK;
 using Playnite.SDK.Data;
 using PlayniteUtilitiesCommon;
 using PurchaseDateImporter.Models;
@@ -15,7 +15,7 @@ namespace PurchaseDateImporter.Services
         private static readonly ILogger logger = LogManager.GetLogger();
         public static Guid PluginId = Guid.Parse("00000002-dbd1-46c6-b5d0-b1ba559d10e4");
         public const string LibraryName = "Epic";
-        public const string LoginUrl = @"https://store.epicgames.com/";
+        public const string LoginUrl = @"https://www.epicgames.com/account/transactions";
         private const string epicUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
 
         public static Dictionary<string, LicenseData> GetLicensesDict()
